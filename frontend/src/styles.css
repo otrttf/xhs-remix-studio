@@ -177,6 +177,16 @@ textarea {
   max-width: 110px;
 }
 
+.collect-hint {
+  background: #fff7e6;
+  border: 1px solid #e3c47b;
+  border-radius: 8px;
+  color: #765414;
+  line-height: 1.55;
+  margin-top: 12px;
+  padding: 10px 12px;
+}
+
 .persona-panel, .library-panel, .drafts-panel {
   grid-column: span 1;
 }

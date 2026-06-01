@@ -34,6 +34,7 @@ function App() {
   const [message, setMessage] = useState("");
   const [remixError, setRemixError] = useState("");
   const [busy, setBusy] = useState(false);
+  const [collecting, setCollecting] = useState(false);
 
   const selectedNote = useMemo(() => notes.find((note) => note.id === selectedNoteId), [notes, selectedNoteId]);
   const selectedPersona = useMemo(() => personas.find((persona) => persona.id === selectedPersonaId), [personas, selectedPersonaId]);
@@ -79,15 +80,20 @@ function App() {
   }
 
   async function collect() {
-    await runBusy(async () => {
-      const result = await api.collect({ keyword, limit: Number(limit) });
-      setMessage(`采集完成：发现 ${result.stats.found} 条，保存 ${result.stats.saved} 条，失败 ${result.stats.failed} 条`);
-      setLibraryFilter(keyword);
-      await loadAll();
-      if (result.notes?.[0]?.id) {
-        setSelectedNoteId(result.notes[0].id);
-      }
-    });
+    setCollecting(true);
+    try {
+      await runBusy(async () => {
+        const result = await api.collect({ keyword, limit: Number(limit) });
+        setMessage(`采集完成：发现 ${result.stats.found} 条，保存 ${result.stats.saved} 条，失败 ${result.stats.failed} 条`);
+        setLibraryFilter(keyword);
+        await loadAll();
+        if (result.notes?.[0]?.id) {
+          setSelectedNoteId(result.notes[0].id);
+        }
+      });
+    } finally {
+      setCollecting(false);
+    }
   }
 
   async function createPersona() {
@@ -194,8 +200,13 @@ function App() {
           <div className="form-row">
             <input value={keyword} onChange={(event) => setKeyword(event.target.value)} placeholder="关键词，如 北京美食" />
             <input type="number" min="1" max="50" value={limit} onChange={(event) => setLimit(event.target.value)} />
-            <button onClick={collect} disabled={busy}>采集素材</button>
+            <button onClick={collect} disabled={busy || collecting}>{collecting ? "采集中..." : "采集素材"}</button>
           </div>
+          {collecting && (
+            <div className="collect-hint">
+              OpenCLI 正在逐条获取帖子正文和图片，可能需要几十秒。完成后素材库会自动刷新；如果你切走了页面，稍后手动刷新也可以。
+            </div>
+          )}
         </section>
 
         <section className="panel persona-panel">
