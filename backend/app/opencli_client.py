@@ -29,6 +29,12 @@ def note_key_from_url(url: str) -> str:
     return re.sub(r"\W+", "_", url).strip("_")[:80]
 
 
+def natural_image_key(path: Path) -> tuple:
+    numbers = re.findall(r"\d+", path.stem)
+    numeric = int(numbers[-1]) if numbers else 0
+    return (numeric, path.name)
+
+
 class OpenCLIError(RuntimeError):
     pass
 
@@ -108,7 +114,7 @@ class OpenCLIClient:
         output_dir = self.settings.images_dir
         self.run(["xiaohongshu", "download", url, "--output", str(output_dir)], timeout=180)
         note_dir = output_dir / note_key
-        files = sorted(note_dir.glob("*"))
+        files = sorted(note_dir.glob("*"), key=natural_image_key)
         images = []
         for index, path in enumerate(files, start=1):
             if path.is_file() and path.suffix.lower() in {".jpg", ".jpeg", ".png", ".webp"}:

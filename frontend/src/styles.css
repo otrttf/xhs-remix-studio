@@ -128,9 +128,10 @@ textarea {
 }
 
 .layout {
+  align-items: stretch;
   display: grid;
   gap: 16px;
-  grid-template-columns: 360px minmax(420px, 1fr) minmax(420px, 1fr);
+  grid-template-columns: 360px minmax(520px, 1fr) 320px;
   padding: 20px 32px 40px;
 }
 
@@ -187,12 +188,120 @@ textarea {
   padding: 10px 12px;
 }
 
-.persona-panel, .library-panel, .drafts-panel {
-  grid-column: span 1;
+.persona-panel {
+  grid-column: 1 / -1;
 }
 
-.source-panel, .remix-panel {
-  min-height: 640px;
+.persona-heading {
+  align-items: baseline;
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.persona-heading h2 {
+  margin-bottom: 0;
+}
+
+.persona-heading p {
+  color: #6f665c;
+  font-size: 13px;
+  margin: 0;
+}
+
+.persona-row {
+  align-items: stretch;
+  display: grid;
+  gap: 14px;
+  grid-template-columns: 280px minmax(220px, 320px) minmax(360px, 1fr);
+}
+
+.persona-form textarea {
+  min-height: 74px;
+}
+
+.persona-form-actions {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: 1fr 1fr;
+}
+
+.secondary-button {
+  background: #e8dfd2;
+  color: #263238;
+}
+
+.persona-panel .persona-list {
+  margin-top: 0;
+}
+
+.persona-panel .rules {
+  border-top: 0;
+  margin-top: 0;
+  padding-top: 0;
+}
+
+.library-panel {
+  display: flex;
+  flex-direction: column;
+  grid-column: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.drafts-panel {
+  grid-column: 3;
+  grid-row: 3;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.compare-workbench {
+  display: grid;
+  gap: 16px;
+  grid-column: 2;
+  grid-row: 3;
+  grid-template-columns: 1fr;
+  min-height: 0;
+}
+
+.workbench-header {
+  align-items: center;
+  background: #fffdf9;
+  border: 1px solid #ded7ce;
+  border-radius: 8px;
+  display: flex;
+  gap: 16px;
+  grid-column: 1 / -1;
+  justify-content: flex-end;
+  padding: 8px 12px;
+}
+
+.workbench-context {
+  color: #6f665c;
+  display: flex;
+  font-size: 13px;
+  gap: 12px;
+  max-width: 100%;
+  min-width: 0;
+  width: 100%;
+}
+
+.workbench-context span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.source-panel {
+  max-height: 360px;
+  min-height: 260px;
+  overflow-y: auto;
+}
+
+.remix-panel {
+  min-height: 560px;
+  overflow-y: auto;
 }
 
 .form-grid {
@@ -210,8 +319,15 @@ textarea {
   margin-top: 14px;
 }
 
+.draft-list {
+  max-height: 780px;
+  overflow-y: auto;
+  padding-right: 6px;
+}
+
 .note-list {
-  max-height: 560px;
+  flex: 1 1 0;
+  min-height: 0;
   overflow-y: auto;
   padding-right: 6px;
 }
@@ -324,8 +440,10 @@ textarea {
 .image-strip {
   display: grid;
   gap: 10px;
-  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(88px, 1fr));
   margin: 14px 0;
+  max-height: 118px;
+  overflow-y: auto;
 }
 
 .image-strip img {
@@ -337,11 +455,14 @@ textarea {
 
 .source-content {
   line-height: 1.75;
+  margin-bottom: 10px;
+  max-height: 170px;
+  overflow-y: auto;
   white-space: pre-wrap;
 }
 
 .draft-body {
-  min-height: 360px;
+  min-height: 380px;
 }
 
 .selection-summary {
@@ -390,10 +511,50 @@ textarea {
   padding: 10px;
 }
 
+.remix-images {
+  margin: 12px 0;
+}
+
+.remix-images h3 {
+  margin: 0 0 8px;
+}
+
+.remix-image-grid {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(auto-fill, minmax(92px, 1fr));
+  max-height: 220px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.remix-image-grid img {
+  aspect-ratio: 1;
+  border-radius: 8px;
+  object-fit: cover;
+  width: 100%;
+}
+
 .actions button, .panel-header button {
   align-items: center;
   display: inline-flex;
   gap: 6px;
+}
+
+.export-success {
+  background: #edf7ed;
+  border: 1px solid #9ac49d;
+  border-radius: 8px;
+  color: #1b5e20;
+  display: grid;
+  gap: 5px;
+  line-height: 1.5;
+  margin-top: 12px;
+  padding: 10px 12px;
+}
+
+.export-success span {
+  overflow-wrap: anywhere;
 }
 
 .suggestions {
@@ -413,6 +574,24 @@ textarea {
 @media (max-width: 1180px) {
   .layout {
     grid-template-columns: 1fr;
+  }
+
+  .compare-workbench {
+    grid-column: 1;
+    grid-template-columns: 1fr;
+  }
+
+  .persona-row {
+    grid-template-columns: 1fr;
+  }
+
+  .library-panel, .drafts-panel {
+    grid-column: 1;
+  }
+
+  .source-panel, .remix-panel {
+    max-height: none;
+    min-height: 0;
   }
 
   .status-row {

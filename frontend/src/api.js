@@ -27,4 +27,5 @@ export const api = {
   saveDraft: (id, payload) => request(`/drafts/${id}`, { method: "PUT", body: JSON.stringify(payload) }),
   suggestRules: (id) => request(`/drafts/${id}/suggest-rules`, { method: "POST" }),
   exportDraft: (id) => request(`/export/drafts/${id}.md`),
+  exportDraftLocal: (id) => request(`/export/drafts/${id}/local`, { method: "POST" }),
 };

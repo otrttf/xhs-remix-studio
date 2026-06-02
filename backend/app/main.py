@@ -1,5 +1,7 @@
 from pathlib import Path
 import difflib
+import re
+import shutil
 from typing import Optional
 
 from fastapi import FastAPI, HTTPException
@@ -57,8 +59,39 @@ def _note_with_images(conn, note_id: int) -> dict:
     if not note:
         raise HTTPException(status_code=404, detail="笔记不存在")
     images = [dict(row) for row in conn.execute("SELECT * FROM note_images WHERE note_id = ? ORDER BY sort_order", (note_id,))]
+    images = _display_ordered_images(images)
     note["images"] = images
     return note
+
+
+def _display_ordered_images(images: list[dict]) -> list[dict]:
+    ordered = sorted(images, key=_image_order_key)
+    if len(ordered) > 1:
+        return [*ordered[1:], ordered[0]]
+    return ordered
+
+
+def _image_order_key(image: dict) -> tuple:
+    name = Path(image.get("local_path", "")).stem
+    numbers = re.findall(r"\d+", name)
+    numeric = int(numbers[-1]) if numbers else int(image.get("sort_order") or 0)
+    return (numeric, image.get("local_path", ""))
+
+
+def _safe_filename(value: str, fallback: str = "draft") -> str:
+    name = re.sub(r"[\\/:*?\"<>|\s]+", "-", value).strip("-")
+    return name[:80] or fallback
+
+
+def _draft_markdown(draft: dict, note: dict, image_prefix: str = "") -> str:
+    title = draft["final_title"] or draft["generated_title"]
+    body = draft["final_body"] or draft["generated_body"]
+    image_lines = []
+    for image in note["images"]:
+        path = Path(image["local_path"]).name if image_prefix else image["local_path"]
+        image_lines.append(f"![图片]({image_prefix}{path})")
+    images = "\n".join(image_lines)
+    return f"# {title}\n\n{body}\n\n## 建议标签\n{draft['suggested_tags']}\n\n## 图片\n{images}\n"
 
 
 @app.get("/api/health")
@@ -162,6 +195,7 @@ def list_notes(keyword: Optional[str] = None):
                 dict(row)
                 for row in conn.execute("SELECT * FROM note_images WHERE note_id = ? ORDER BY sort_order", (note["id"],))
             ]
+            note["images"] = _display_ordered_images(note["images"])
         return rows
 
 
@@ -330,9 +364,38 @@ def export_draft(draft_id: int):
         if not draft:
             raise HTTPException(status_code=404, detail="草稿不存在")
         note = _note_with_images(conn, draft["note_id"])
-        title = draft["final_title"] or draft["generated_title"]
-        body = draft["final_body"] or draft["generated_body"]
-        images = "\n".join([f"![图片](/assets/{image['local_path']})" for image in note["images"]])
-        return {
-            "markdown": f"# {title}\n\n{body}\n\n## 建议标签\n{draft['suggested_tags']}\n\n## 图片\n{images}\n"
-        }
+        return {"markdown": _draft_markdown(draft, note, image_prefix="/assets/")}
+
+
+@app.post("/api/export/drafts/{draft_id}/local")
+def export_draft_local(draft_id: int):
+    with get_db() as conn:
+        draft = row_to_dict(conn.execute("SELECT * FROM drafts WHERE id = ?", (draft_id,)).fetchone())
+        if not draft:
+            raise HTTPException(status_code=404, detail="草稿不存在")
+        note = _note_with_images(conn, draft["note_id"])
+
+    title = draft["final_title"] or draft["generated_title"]
+    export_root = settings.database_path.parent.parent / "exports"
+    export_dir = export_root / f"draft-{draft_id}-{_safe_filename(title)}"
+    export_dir.mkdir(parents=True, exist_ok=True)
+
+    copied_images = []
+    for image in note["images"]:
+        source = settings.database_path.parent.parent / image["local_path"]
+        if not source.exists():
+            continue
+        target = export_dir / source.name
+        shutil.copy2(source, target)
+        copied_images.append(str(target))
+
+    markdown = _draft_markdown(draft, note, image_prefix="./")
+    markdown_path = export_dir / "draft.md"
+    markdown_path.write_text(markdown, encoding="utf-8")
+
+    return {
+        "ok": True,
+        "export_dir": str(export_dir),
+        "markdown_path": str(markdown_path),
+        "image_count": len(copied_images),
+    }
