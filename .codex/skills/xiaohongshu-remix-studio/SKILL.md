@@ -115,6 +115,8 @@ OpenAI(api_key=key, base_url="https://api.minimaxi.com/v1")
 client.chat.completions.create(model="MiniMax-M2.7", messages=[...])
 ```
 
+Current MiniMax usage is text-only. The app displays and exports Xiaohongshu images, but it does not currently send images to MiniMax for image understanding or generation.
+
 OpenAI uses Responses API:
 
 ```python
@@ -128,6 +130,12 @@ For generation, require JSON with:
 - `tags`
 - `image_advice`
 
+Prompt locations:
+
+- Main rewrite prompt: `backend/app/ai_service.py`, `AIService.generate()`.
+- Style-rule extraction prompt: `backend/app/ai_service.py`, `AIService.suggest_rules()`.
+- Persona-specific writing preferences should go into `persona_rules`, not the global prompt. Example: if `小白` titles overuse `救命`, add a rule such as `标题要保持小白的活泼感，但不要总用“救命”开头；多用场景、反差、真实感和馋感来制造吸引力。`
+
 ## Frontend Patterns
 
 Key files:
@@ -140,7 +148,12 @@ UX expectations:
 
 - Show API/backend errors inline, especially in the remix panel.
 - Always show selected source note and selected persona before generation.
-- The collected-material list should be fixed-height and scrollable, roughly five cards visible.
+- Current layout:
+  - Persona management is a horizontal full-width row.
+  - Main work row has three columns: collected materials, original-vs-remix comparison, and draft library.
+  - Original and remix content are vertically stacked in the middle column for easier comparison.
+  - Clicking a draft in the draft library must also select its source note and persona so the original post appears immediately.
+- The collected-material list should be scrollable and visually align with the adjacent work panels.
 - The user workflow should be obvious:
   1. Select one collected post.
   2. Select persona `小白`.
@@ -150,6 +163,20 @@ UX expectations:
   6. Suggest and add persona rules.
 
 Avoid making the page a generic dashboard. It is a drafting workbench.
+
+Persona management:
+
+- Existing personas must be editable after selection.
+- New persona creation should not accidentally overwrite the selected persona.
+- Style changes that apply only to one persona should be added as persona rules.
+- User edits are saved as draft final text first; `提炼规则` then turns AI-vs-user differences into candidate rules for that persona.
+
+Image and export behavior:
+
+- Original note images should be shown in both the original-material area and the remix/draft area.
+- `复制 Markdown` copies text-oriented markdown only.
+- `保存到本地` exports the draft markdown and copied images under `exports/`.
+- Image display order has been user-corrected before. When changing image logic, inspect `backend/app/main.py` image ordering helpers and verify that the first Xiaohongshu image appears first in the workbench.
 
 ## Debugging Checklist
 
@@ -168,6 +195,18 @@ sqlite3 data/app.db 'select id, keyword, title, author, likes, status from notes
 ```
 
 If `data/images` has files but `notes` is empty, inspect transaction behavior in `/api/collect`.
+
+For collection that appears delayed or unchanged:
+
+- OpenCLI collection can take time; the frontend should show a collecting/waiting hint.
+- Duplicate Xiaohongshu links should not create duplicate note rows, so a repeated keyword may return fewer new materials.
+- Check the `/api/collect` response, then inspect recent database rows:
+
+  ```bash
+  sqlite3 data/app.db 'select id, keyword, title, status, created_at from notes order by id desc limit 20;'
+  ```
+
+- If the backend collected records but the UI is stale, refresh notes after the collection promise finishes.
 
 For generation not responding:
 
