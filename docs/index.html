@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>小红书 AI 二创工作台 Demo</title>
+    <meta
+      name="description"
+      content="小红书 AI 二创工作台：从 OpenCLI 素材采集到人设化改写、人工编辑和风格规则沉淀的内容生产工具。"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="小红书 AI 二创工作台">
+        <span class="brand-mark">X</span>
+        <span>小红书 AI 二创工作台</span>
+      </a>
+      <nav class="nav" aria-label="页面导航">
+        <a href="#workflow">流程</a>
+        <a href="#demo">Demo</a>
+        <a href="#architecture">架构</a>
+        <a href="#deploy">场景</a>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section class="hero section-band">
+        <div class="hero-copy">
+          <p class="eyebrow">AI Content Remix Workflow</p>
+          <h1>小红书 AI 二创工作台</h1>
+          <p class="hero-lede">
+            把小红书素材变成可持续优化的人设化草稿：用 OpenCLI 采集关键词笔记，用 MiniMax/OpenAI-compatible API 按人设二创，
+            再把用户编辑沉淀成可复用的风格规则。
+          </p>
+          <div class="hero-actions">
+            <a class="button primary" href="#demo">查看交互式 Demo</a>
+            <a class="button secondary" href="https://github.com/otrttf/xhs-remix-studio">查看 GitHub</a>
+          </div>
+        </div>
+
+        <div class="hero-product" aria-label="产品界面预览">
+          <div class="window-bar">
+            <span></span><span></span><span></span>
+            <strong>remix-studio.local</strong>
+          </div>
+          <div class="product-grid">
+            <div class="mini-panel">
+              <small>关键词采集</small>
+              <strong>北京美食</strong>
+              <div class="progress"><i></i></div>
+              <p>OpenCLI 正在整理标题、正文、互动数据和图片。</p>
+            </div>
+            <div class="mini-panel accent">
+              <small>当前人设</small>
+              <strong>小白</strong>
+              <p>00 后女大学生，真实体验感，口语化分享。</p>
+            </div>
+            <div class="mini-panel tall">
+              <small>AI 草稿</small>
+              <strong>学生党也能冲的北京小馆</strong>
+              <p>这家真的有点惊喜。不是那种硬凹网红感的小店，而是朋友会认真发给你的那种。</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="workflow" class="section">
+        <div class="section-heading">
+          <p class="eyebrow">Workflow</p>
+          <h2>从采集素材到沉淀人设风格的内容二创工作流</h2>
+          <p>
+            输入关键词后，工作台会把可参考的原帖素材、图片、人设规则、AI 草稿、用户终稿和风格沉淀串在一起，
+            让内容运营可以从找素材一路推进到可复用的账号风格资产。
+          </p>
+        </div>
+        <div class="flow">
+          <article>
+            <span>01</span>
+            <h3>采集素材</h3>
+            <p>输入关键词和数量，通过 OpenCLI 抓取候选笔记、完整正文、互动数据和图片。</p>
+          </article>
+          <article>
+            <span>02</span>
+            <h3>选择人设</h3>
+            <p>创建“小白”“小黑”等不同写作口吻，并维护该人设的专属风格规则。</p>
+          </article>
+          <article>
+            <span>03</span>
+            <h3>AI 二创</h3>
+            <p>把原文、人设描述和规则交给模型，生成标题、正文、标签与图片使用建议。</p>
+          </article>
+          <article>
+            <span>04</span>
+            <h3>编辑沉淀</h3>
+            <p>用户保存终稿后，系统对比 AI 初稿和用户终稿，提炼为下次可复用的规则。</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="demo" class="section demo-section">
+        <div class="section-heading">
+          <p class="eyebrow">Interactive Demo</p>
+          <h2>用虚拟数据还原真实工作台动线</h2>
+          <p>下面用一组示例素材演示真实使用路径：先确认采集结果，再选择人设和素材，生成草稿、编辑终稿，并把修改偏好沉淀为风格规则。</p>
+        </div>
+
+        <div class="demo-shell">
+          <section class="collected-summary" aria-label="采集概览">
+            <article>
+              <span>已采集帖子</span>
+              <strong id="summaryCount">33</strong>
+            </article>
+            <article>
+              <span>关键词</span>
+              <strong id="summaryKeywords">北京火锅 / 北京烤鸭 / 北京美食</strong>
+            </article>
+            <article>
+              <span>最近采集</span>
+              <strong id="summaryLatest">2026-06-12 00:50</strong>
+            </article>
+            <article>
+              <span>OpenCLI</span>
+              <strong>可用</strong>
+            </article>
+          </section>
+
+          <section class="demo-collect-panel">
+            <div class="demo-toolbar">
+              <label for="keyword">关键词</label>
+              <input id="keyword" value="北京美食" />
+              <label for="collectCount">数量</label>
+              <input id="collectCount" value="10" />
+              <button id="collectButton" type="button">模拟采集</button>
+            </div>
+            <p id="collectStatus" class="status-line">虚拟素材已准备好，可直接选择素材和人设生成草稿。</p>
+          </section>
+
+          <section class="persona-system" aria-label="人设系统">
+            <div class="persona-list-panel">
+              <div class="panel-title">
+                <h3>人设</h3>
+                <span>选择写作口吻</span>
+              </div>
+              <div class="persona-list" id="personaList"></div>
+              <button class="ghost-action" id="newPersonaButton" type="button">新建空白人设</button>
+            </div>
+
+            <div class="persona-detail-panel">
+              <div class="panel-title">
+                <h3 id="personaName">小白</h3>
+                <button class="text-action" id="editPersonaButton" type="button">编辑</button>
+              </div>
+              <textarea id="personaDescription" aria-label="人设描述"></textarea>
+            </div>
+
+            <div class="persona-rules-panel">
+              <div class="panel-title">
+                <h3>风格规则</h3>
+                <span id="ruleStatus">编辑偏好会沉淀到当前人设</span>
+              </div>
+              <div class="rule-input-row">
+                <input id="newRuleInput" placeholder="手动添加一条规则" />
+                <button id="addRuleButton" type="button">添加</button>
+              </div>
+              <ul id="ruleList"></ul>
+            </div>
+          </section>
+
+          <div class="demo-workbench">
+            <aside class="demo-sidebar">
+              <div class="panel-title">
+                <h3>已采集素材</h3>
+                <span>虚拟数据</span>
+              </div>
+              <div class="note-list" id="noteList" aria-label="模拟素材列表"></div>
+            </aside>
+
+            <section class="comparison" aria-label="原文和二创对照">
+              <article class="source-card">
+                <div class="card-head">
+                  <span>原帖素材</span>
+                  <strong id="sourceTitle"></strong>
+                </div>
+                <p id="sourceMeta" class="muted"></p>
+                <p id="sourceBody"></p>
+                <div class="image-strip" aria-label="模拟配图">
+                  <span></span><span></span><span></span><span></span>
+                </div>
+              </article>
+
+              <article class="draft-card">
+                <div class="card-head">
+                  <span>二创草稿</span>
+                  <button id="generateButton" type="button">生成</button>
+                </div>
+                <div class="draft-context">
+                  <span>当前素材：<strong id="currentNoteName"></strong></span>
+                  <span>当前人设：<strong id="currentPersonaName"></strong></span>
+                </div>
+                <input id="draftTitle" aria-label="二创标题" />
+                <textarea id="draftBody" aria-label="二创正文"></textarea>
+                <div class="tag-row" id="tagRow"></div>
+                <div class="draft-actions">
+                  <button id="saveButton" type="button">保存终稿</button>
+                  <button id="refineButton" type="button">提炼规则</button>
+                  <button type="button">复制 Markdown</button>
+                  <button type="button">保存到本地</button>
+                </div>
+              </article>
+            </section>
+
+            <aside class="drafts-panel-demo">
+              <div class="panel-title">
+                <h3>草稿箱</h3>
+                <span>点击草稿会同步原文和人设</span>
+              </div>
+              <div class="draft-list" id="draftList"></div>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      <section id="architecture" class="section split-section">
+        <div>
+          <p class="eyebrow">Architecture</p>
+          <h2>围绕本地草稿库搭建的 AI 产品架构</h2>
+          <p>
+            工作台把采集、素材库、草稿编辑和风格规则管理放在一条链路里。文本生成由模型完成，素材、图片、草稿和编辑记录由本地系统统一管理。
+          </p>
+        </div>
+        <div class="stack-map">
+          <div>OpenCLI<span>小红书素材采集</span></div>
+          <div>FastAPI<span>任务编排与接口</span></div>
+          <div>SQLite<span>素材、草稿、规则</span></div>
+          <div>MiniMax<span>文本二创与规则提炼</span></div>
+          <div>React/Vite<span>本地工作台界面</span></div>
+        </div>
+      </section>
+
+      <section class="section decisions-section">
+        <div class="section-heading">
+          <p class="eyebrow">Product Decisions</p>
+          <h2>MVP 版本的关键产品取舍</h2>
+          <p>这个工具把 AI 放在“辅助生成和总结偏好”的位置，保留用户对选题、表达和最终成稿的判断权。</p>
+        </div>
+        <div class="decision-list">
+          <article>
+            <span>不做自动发布</span>
+            <p>定位为草稿生产和风格管理工具，成稿仍由用户确认后再决定是否发布。</p>
+          </article>
+          <article>
+            <span>规则由用户确认</span>
+            <p>AI 只提出候选规则，用户确认后才写入人设，防止错误总结污染风格库。</p>
+          </article>
+          <article>
+            <span>本地优先</span>
+            <p>把素材、图片、草稿和编辑记录整理成本地资产，方便反复查看、编辑和导出。</p>
+          </article>
+          <article>
+            <span>单条失败不中断</span>
+            <p>搜索拿到候选素材后，单条详情或图片下载失败会被标记状态，其他素材仍可继续入库。</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="deploy" class="section deploy-section">
+        <div class="section-heading">
+          <p class="eyebrow">Use Cases</p>
+          <h2>适合哪些内容生产场景</h2>
+        </div>
+        <div class="deploy-grid">
+          <article>
+            <h3>探店内容运营</h3>
+            <p>围绕“北京美食”“北京烤鸭”等关键词快速整理参考素材，再按账号人设生成可编辑草稿。</p>
+          </article>
+          <article>
+            <h3>账号人设打磨</h3>
+            <p>把“00 后女大学生”“初入职场打工人”等不同表达方式拆成人设描述和风格规则。</p>
+          </article>
+          <article>
+            <h3>团队内容复盘</h3>
+            <p>通过 AI 初稿和人工终稿的差异，总结可复用写作偏好，让下一次生成更贴近团队标准。</p>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <span>小红书 AI 二创工作台</span>
+      <a href="https://github.com/otrttf/xhs-remix-studio">GitHub Repository</a>
+    </footer>
+
+    <script src="./script.js"></script>
+  </body>
+</html>

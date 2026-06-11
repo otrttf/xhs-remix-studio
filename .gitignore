@@ -10,3 +10,4 @@ frontend/dist/
 .DS_Store
 .codex/skills/project-git-workflow/
 exports/
+docs/demo/

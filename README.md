@@ -2,6 +2,30 @@
 
 本地项目，用 `opencli` 抓取小红书关键词内容和图片，再用 MiniMax/OpenAI-compatible API 按人设生成二创草稿。用户编辑后的终稿会留下编辑记录，并可提炼为人设风格规则。
 
+## 在线 Demo
+
+项目提供一个适合公开分享的静态 Demo 展示页，不调用真实接口、不包含本地数据或 API Key：
+
+```text
+docs/index.html
+```
+
+部署到 GitHub Pages 后，可作为简历或作品集链接使用。真实工作台仍需在本地运行后端、前端、OpenCLI 和模型 API。
+
+GitHub Pages 设置：
+
+1. 打开仓库 `Settings`。
+2. 进入 `Pages`。
+3. `Source` 选择 `Deploy from a branch`。
+4. `Branch` 选择 `main`，目录选择 `/docs`。
+5. 保存后访问：
+
+```text
+https://otrttf.github.io/xhs-remix-studio/
+```
+
+说明：这个链接是静态展示页，不会在线采集小红书内容，也不会调用 MiniMax/OpenAI API。
+
 ## 功能
 
 - 关键词采集：输入 `北京美食` 等关键词，抓取标题、作者、正文、点赞、图片。
