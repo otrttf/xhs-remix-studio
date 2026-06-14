@@ -30,13 +30,13 @@ Do not add auto-publishing in v1. This is a local drafting and style-learning to
 Important commands:
 
 ```bash
-cd /Users/hejiaxuan/Desktop/dongli/xiaohongshu-remix-studio/backend
+cd backend
 source .venv/bin/activate
 python run.py
 ```
 
 ```bash
-cd /Users/hejiaxuan/Desktop/dongli/xiaohongshu-remix-studio/frontend
+cd frontend
 /usr/local/bin/npm run dev
 ```
 
