@@ -1,6 +1,5 @@
 from pathlib import Path
 import difflib
-import re
 import shutil
 from typing import Optional
 
@@ -12,6 +11,7 @@ from pydantic import BaseModel, Field
 from .ai_service import AIService, AIServiceError
 from .config import get_settings
 from .database import get_db, init_db, now_iso, row_to_dict
+from .image_order import display_ordered_images
 from .opencli_client import OpenCLIClient, OpenCLIError
 
 
@@ -65,17 +65,7 @@ def _note_with_images(conn, note_id: int) -> dict:
 
 
 def _display_ordered_images(images: list[dict]) -> list[dict]:
-    ordered = sorted(images, key=_image_order_key)
-    if len(ordered) > 1:
-        return [*ordered[1:], ordered[0]]
-    return ordered
-
-
-def _image_order_key(image: dict) -> tuple:
-    name = Path(image.get("local_path", "")).stem
-    numbers = re.findall(r"\d+", name)
-    numeric = int(numbers[-1]) if numbers else int(image.get("sort_order") or 0)
-    return (numeric, image.get("local_path", ""))
+    return display_ordered_images(images)
 
 
 def _safe_filename(value: str, fallback: str = "draft") -> str:

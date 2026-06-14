@@ -260,3 +260,18 @@ python run.py
 ```
 
 它的价值不只是“调用 AI 写文案”，而是把 AI 放进一个完整的内容生产工作流里，让用户的每一次编辑都能变成后续生成的风格资产。
+
+## 12. 迁移后的维护记录
+
+项目移动到 `/Users/hejiaxuan/Desktop/codexproject/xiaohongshu-remix-studio` 后，做了一次轻量体检：
+
+- `backend/.venv/bin/python -m py_compile ...` 通过。
+- `backend/.venv/bin/python backend/tests_smoke.py` 通过。
+- `cd frontend && /usr/local/bin/npm run build` 通过。
+
+本次维护修正了两处容易复发的问题：
+
+- 图片展示顺序不再把排序后的第一张图片挪到末尾；小红书原帖第一张图会继续排在工作台第一位。
+- MiniMax 默认 Base URL 调整为 `https://api.minimaxi.com/v1`，并让 `Settings` 在实例初始化时读取环境变量，方便测试或重启后拿到最新配置。
+
+同时新增了 smoke test 覆盖图片顺序和 MiniMax 默认配置，后续改图片逻辑或 AI 配置时建议先跑验证命令。
