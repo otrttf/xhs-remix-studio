@@ -4,22 +4,6 @@
 
 ## 在线 Demo
 
-项目提供一个适合公开分享的静态 Demo 展示页，不调用真实接口、不包含本地数据或 API Key：
-
-```text
-docs/index.html
-```
-
-部署到 GitHub Pages 后，可作为简历或作品集链接使用。真实工作台仍需在本地运行后端、前端、OpenCLI 和模型 API。
-
-GitHub Pages 设置：
-
-1. 打开仓库 `Settings`。
-2. 进入 `Pages`。
-3. `Source` 选择 `Deploy from a branch`。
-4. `Branch` 选择 `main`，目录选择 `/docs`。
-5. 保存后访问：
-
 ```text
 https://otrttf.github.io/xhs-remix-studio/
 ```
