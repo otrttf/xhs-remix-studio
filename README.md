@@ -1,14 +1,14 @@
 # 小红书 AI 二创工作台
 
-本地项目，用 `opencli` 抓取小红书关键词内容和图片，再用 MiniMax/OpenAI-compatible API 按人设生成二创草稿。用户编辑后的终稿会留下编辑记录，并可提炼为人设风格规则。
+把小红书素材变成可持续优化的人设化草稿：用 `opencli` 抓取小红书关键词内容和图片，再用 MiniMax/OpenAI-compatible API 按人设二创。再把用户编辑沉淀成可复用的风格规则。
 
-## 在线 Demo
+## 介绍页 - 在线 Demo
 
 ```text
 https://otrttf.github.io/xhs-remix-studio/
 ```
 
-说明：这个链接是静态展示页，不会在线采集小红书内容，也不会调用 MiniMax/OpenAI API。
+说明：链接内demo为功能示意，不会在线采集小红书内容，也不会调用 MiniMax/OpenAI API。
 
 ## 功能
 
