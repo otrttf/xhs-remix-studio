@@ -8,7 +8,7 @@
 https://otrttf.github.io/xhs-remix-studio/
 ```
 
-说明：链接内demo为功能示意，不会在线采集小红书内容，也不会调用 MiniMax/OpenAI API。
+说明：链接内demo为功能示意，不会在线采集小红书内容，也不会调用 MiniMax API。
 
 ## 功能
 
